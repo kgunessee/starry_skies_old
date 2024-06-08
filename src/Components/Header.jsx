@@ -1,4 +1,3 @@
-import logo from "../Assets/Star.svg";
 import { useState } from "react";
 
 export default function Header({ openSearch, openMenu }) {
