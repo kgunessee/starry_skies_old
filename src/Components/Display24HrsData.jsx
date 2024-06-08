@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { Bar, ComposedChart, Area, ResponsiveContainer } from "recharts";
 import {
   temperatureBackground,
@@ -8,6 +9,8 @@ import {
   precipitationBackground,
   cloudPercentage,
   weatherConditionBackground,
+  dewPointBackground,
+  humidityBackground,
 } from "../gridColourFunctions.js";
 import {
   Clear,
@@ -20,8 +23,9 @@ import {
   HeavyRain,
   Lightning,
   ModerateRain,
-} from "./Weather_icons/index";
+} from "./Weather_icons/WeatherIcons.jsx";
 
+// Styling for the grid items.
 const gridItemStyling =
   "h-[26px] w-[26px] list-none rounded place-items-center font-inter text-xs font-semibold grid mb-1";
 const gridRowStyling =
@@ -59,16 +63,32 @@ const weatherIcons = {
   99: <Lightning />,
 };
 
-function getWeatherIcon(weatherCode) {
-  return weatherIcons[weatherCode] || null;
-}
+// Styling for the area chart - hidden or shown.
+const showAreaChartStyle = {
+  opacity: 1,
+  transition: "opacity 200ms ease-in-out",
+};
+const hideAreaChartStyle = {
+  opacity: 0,
+  transition: "opacity 200ms ease-in-out",
+};
 
-function generateListItems(
+// Styling for the whole chart - hidden or shown.
+const showCloudsStyle = { minHeight: "25vh", maxHeight: "100vh" };
+const hideCloudsStyle = { minHeight: "0", maxHeight: "0" };
+
+// Function to get the weather icon based on the weather code.
+const getWeatherIcon = (weatherCode) => {
+  return weatherIcons[weatherCode] || null;
+};
+
+// Function to generate the rows of data for the different weather parameters (temperature, wind speed, etc.).
+const generateListItems = (
   dataArray,
   styleFunction,
   unitSymbol = "",
   roundToDecimal = 0,
-) {
+) => {
   return dataArray.map((item, index) => (
     <li
       key={`${item}-${index}`}
@@ -78,8 +98,9 @@ function generateListItems(
       {item.toFixed(roundToDecimal) + unitSymbol}
     </li>
   ));
-}
+};
 
+// Main component.
 export default function Display24HrsData({
   hourlyWeatherData,
   dayStart,
@@ -88,7 +109,6 @@ export default function Display24HrsData({
   showGraph,
   scrollPosition,
   headingThreeStyling,
-  divWidth,
   leftMargin,
 }) {
   const [daySection, setDaySection] = useState(null);
@@ -98,6 +118,7 @@ export default function Display24HrsData({
     transition: "all 0.5s",
   };
 
+  // useEffect hook to update all weather data when the hourlyWeatherData prop changes with new weather data.
   useEffect(() => {
     if (hourlyWeatherData.cloud_cover) {
       const totalClouds = hourlyWeatherData.cloud_cover.map((_, i) => ({
@@ -116,31 +137,17 @@ export default function Display24HrsData({
             : 99,
       }));
 
-      const showAreaChartStyle = {
-        opacity: 1,
-        transition: "opacity 200ms ease-in-out",
-      };
-      const hideAreaChartStyle = {
-        opacity: 0,
-        transition: "opacity 200ms ease-in-out",
-      };
-      const showCloudsStyle = { minHeight: "25vh", maxHeight: "100vh" };
-      const hideCloudsStyle = { minHeight: "0", maxHeight: "0" };
-      const showOL = {
-        maxHeight: "100%",
-        opacity: 1,
-        transition: "max-height 250ms ease-in-out, opacity 0.5s ease-in-out",
-      };
-      const hideOL = { opacity: 0, transition: " opacity 0.5s ease-in-out" };
-
       setDaySection(
         <div
           className={`relative ${leftMargin} flex h-full w-[800px] flex-col gap-1`}
         >
-          <div className={`-mx-1.5 mt-2 rounded bg-000E14 p-1.5`}>
+          <div
+            //------------------------------------Cloud Cover------------------------------------//
+            className={`-mx-1.5 mt-2 rounded bg-gradient-to-r from-000E14 via-[#011924] via-50% to-000E14 to-100% p-1.5`}
+          >
             <h3
               style={h3ScrollStyling}
-              className={`${headingThreeStyling} mt-1 text-xl`}
+              className={`${headingThreeStyling} mt-1`}
             >
               Cloud Cover (%)
             </h3>
@@ -200,7 +207,7 @@ export default function Display24HrsData({
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
-            <div className={`${divWidth}`}>
+            <div className={``}>
               <ul className={`${ulGlobalStyling}`}>
                 {hourlyWeatherData.cloud_cover
                   .slice(dayStart, dayEnd)
@@ -217,7 +224,10 @@ export default function Display24HrsData({
             </div>
           </div>
 
-          <div className={`${gridRowStyling} ${divWidth} mt-1`}>
+          <div
+            //------------------------------------Precipitation------------------------------------//
+            className={`${gridRowStyling} mt-1`}
+          >
             <h3 style={h3ScrollStyling} className={`${headingThreeStyling} `}>
               Precipitation (%)
             </h3>
@@ -245,7 +255,10 @@ export default function Display24HrsData({
             </ul>
           </div>
 
-          <div className={`${gridRowStyling} ${divWidth}`}>
+          <div
+            //------------------------------------Temperature------------------------------------//
+            className={`${gridRowStyling} `}
+          >
             <h3 style={h3ScrollStyling} className={headingThreeStyling}>
               Temperature (Celsius)
             </h3>
@@ -258,7 +271,10 @@ export default function Display24HrsData({
             </ul>
           </div>
 
-          <div className={`${gridRowStyling} ${divWidth}`}>
+          <div
+            //------------------------------------Wind Speed & Direction------------------------------------//
+            className={`${gridRowStyling} `}
+          >
             <h3 style={h3ScrollStyling} className={headingThreeStyling}>
               Wind Speed (mph)
             </h3>
@@ -293,7 +309,10 @@ export default function Display24HrsData({
             </ul>
           </div>
 
-          <div className={`${gridRowStyling} ${divWidth}`}>
+          <div
+            //------------------------------------Wind Gusts------------------------------------//
+            className={`${gridRowStyling} `}
+          >
             <h3 style={h3ScrollStyling} className={headingThreeStyling}>
               Wind Gusts (mph)
             </h3>
@@ -307,35 +326,54 @@ export default function Display24HrsData({
             </ul>
           </div>
 
-          <div className={`${gridRowStyling} ${divWidth}`}>
+          <div
+            //------------------------------------Dew Point------------------------------------//
+            className={`${gridRowStyling} `}
+          >
             <h3 style={h3ScrollStyling} className={headingThreeStyling}>
               Dew Point (Celsius)
             </h3>
-            <ul className={ulGlobalStyling}>
-              {generateListItems(
-                hourlyWeatherData.dew_point_2m.slice(dayStart, dayEnd),
-                windGustBackground,
-                "°",
-                0,
-              )}
+            <ul className={`${ulGlobalStyling}`}>
+              {hourlyWeatherData.dew_point_2m
+                .slice(dayStart, dayEnd)
+                .map((item, index) => (
+                  <li
+                    className={`${gridItemStyling} `}
+                    style={dewPointBackground(
+                      item,
+                      hourlyWeatherData.dew_point_2m.slice(dayStart, dayEnd)[
+                        index
+                      ],
+                    )}
+                    key={`${item}-${index}`}
+                  >
+                    {item.toFixed(0)}°
+                  </li>
+                ))}
             </ul>
           </div>
 
-          <div className={`${gridRowStyling} ${divWidth}`}>
+          <div
+            //------------------------------------Humidity------------------------------------//
+            className={`${gridRowStyling} `}
+          >
             <h3 style={h3ScrollStyling} className={headingThreeStyling}>
               Humidity (%)
             </h3>
             <ul className={ulGlobalStyling}>
               {generateListItems(
                 hourlyWeatherData.relative_humidity_2m.slice(dayStart, dayEnd),
-                windGustBackground,
+                humidityBackground,
                 "°",
-                1,
+                0,
               )}
             </ul>
           </div>
 
-          <div className={`${gridRowStyling} ${divWidth}`}>
+          <div
+            //------------------------------------Visibility------------------------------------//
+            className={`${gridRowStyling} `}
+          >
             <h3 style={h3ScrollStyling} className={headingThreeStyling}>
               Visibility (Miles)
             </h3>
@@ -364,3 +402,14 @@ export default function Display24HrsData({
     </section>
   );
 }
+
+Display24HrsData.propTypes = {
+  hourlyWeatherData: PropTypes.array,
+  dayStart: PropTypes.number,
+  dayEnd: PropTypes.number,
+  clouds: PropTypes.object,
+  showGraph: PropTypes.bool,
+  scrollPosition: PropTypes.number,
+  headingThreeStyling: PropTypes.string,
+  leftMargin: PropTypes.string,
+};

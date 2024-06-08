@@ -66,3 +66,43 @@ export function weatherConditionBackground(item) {
     return { backgroundColor: "#DB3B3B" };
   }
 }
+
+export function dewPointBackground(dew, humidity) {
+  const dewRounded = dew.toFixed(0);
+  const humidityRounded = humidity.toFixed(0);
+
+  if (dewRounded < 10) {
+    return { backgroundColor: "#4FC863" };
+  } else if (11 <= dewRounded && dewRounded < 15) {
+    if (humidityRounded < 70) {
+      return { backgroundColor: "#4FC863" };
+    } else {
+      return { backgroundColor: "#e6872e" };
+    }
+  } else if (15 <= dewRounded && dewRounded < 21) {
+    if (humidityRounded < 60) {
+      return { backgroundColor: "#4FC863" };
+    } else if (60 <= humidityRounded && humidityRounded < 80) {
+      return { backgroundColor: "#e6872e" };
+    } else {
+      return { backgroundColor: "#DB3B3B" };
+    }
+  } else {
+    // dewRounded >= 21
+    if (humidityRounded < 30) {
+      return { backgroundColor: "#e6872e" };
+    } else {
+      return { backgroundColor: "#DB3B3B" };
+    }
+  }
+}
+
+export function humidityBackground(item) {
+  if (item <= 80) {
+    return { backgroundColor: "#4FC863" };
+  } else if (item > 80 && item <= 90) {
+    return { backgroundColor: "#e6872e" };
+  } else {
+    return { backgroundColor: "#DB3B3B" };
+  }
+}
