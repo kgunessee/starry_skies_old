@@ -18,7 +18,7 @@ export default function Header({ openSearch, openMenu }) {
         className={`relative mb-2 flex items-center justify-between gap-2 rounded bg-WHITE-TRANS p-3`}
       >
         <div className="flex items-center gap-2">
-          {/*<img src={logo} className="w-6" />*/}
+          <img src={logo} className="w-6" />
           <h1 className="font-catamaran text-2xl font-semibold text-LIGHT-COLOR">
             Starry Skies
           </h1>
