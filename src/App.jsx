@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import Header from "./Components/Header";
+import MainAppDisplay from "./Components/MainAppDisplay.jsx";
+import Menu from "./Components/Menu.jsx";
+import PropTypes from "prop-types";
 
 function App() {
-  const [count, setCount] = useState(0)
+  MainAppDisplay.propTypes = {
+    name: PropTypes.string,
+  };
+
+  const [openLocationSearch, setOpenLocationSearch] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
+
+  const handleOpenSearch = () => {
+    setOpenLocationSearch(!openLocationSearch);
+  };
+
+  const handleOpenMenu = () => {
+    setOpenMenu(!openMenu);
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="overflow-x-hidden p-2">
+        <div className="pointer-events-none absolute h-full w-full overflow-x-hidden blur-[200px] filter">
+          <div className="absolute -right-1/2 -top-[20%] z-[-1] aspect-square w-[50vh] rounded-[50%] bg-blue-500 opacity-20"></div>
+          <div className="absolute -bottom-[40%] -left-[20%] z-[-1] aspect-square w-[50vh] rounded-[50%] bg-blue-950"></div>
+        </div>
+
+        <Header openSearch={handleOpenSearch} openMenu={handleOpenMenu} />
+        <MainAppDisplay openLocationSearch={openLocationSearch} />
+        <Menu openMenu={openMenu} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
