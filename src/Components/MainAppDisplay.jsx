@@ -5,7 +5,11 @@ import DisplayTimeDateMoonData from "./DisplayTimeDateMoonData.jsx";
 import ShowChartElements from "./ShowChartElements.jsx";
 import GetWeatherData from "./GetWeatherData.jsx";
 
-export default function MainAppDisplay({ openLocationSearch }) {
+export default function MainAppDisplay({
+  openLocationSearch,
+  celOrFar,
+  mphOrKph,
+}) {
   // Weather data state.
   const [hourlyWeatherData, setHourlyWeatherData] = useState([]);
   const [dailyMoonData, setDailyMoonData] = useState([]);
@@ -91,6 +95,10 @@ export default function MainAppDisplay({ openLocationSearch }) {
       section.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    console.log(dailyWeatherData);
+  }, [dailyWeatherData]);
 
   // useEffect to handle the height of the main weather section.
   useLayoutEffect(() => {
@@ -256,8 +264,9 @@ export default function MainAppDisplay({ openLocationSearch }) {
               showGraph={showGraph}
               scrollPosition={scrollPosition}
               headingThreeStyling={headingThreeStylingFirstDay}
-              // divWidth={"w-[105%]"}
               openLocationSearch={openLocationSearch}
+              celOrFar={celOrFar}
+              mphOrKph={mphOrKph}
             />
 
             <Display24HrsData
@@ -271,8 +280,9 @@ export default function MainAppDisplay({ openLocationSearch }) {
               }}
               showGraph={showGraph}
               headingThreeStyling={headingThreeStylingAfterDay}
-              // divWidth={"w-[105%]"}
               leftMargin={leftMargin}
+              celOrFar={celOrFar}
+              mphOrKph={mphOrKph}
             />
 
             <Display24HrsData
@@ -286,8 +296,9 @@ export default function MainAppDisplay({ openLocationSearch }) {
               }}
               showGraph={showGraph}
               headingThreeStyling={headingThreeStylingAfterDay}
-              // divWidth={"w-[105%]"}
               leftMargin={leftMargin}
+              celOrFar={celOrFar}
+              mphOrKph={mphOrKph}
             />
 
             <Display24HrsData
@@ -301,8 +312,9 @@ export default function MainAppDisplay({ openLocationSearch }) {
               }}
               showGraph={showGraph}
               headingThreeStyling={headingThreeStylingAfterDay}
-              // divWidth={"w-[105%]"}
               leftMargin={leftMargin}
+              celOrFar={celOrFar}
+              mphOrKph={mphOrKph}
             />
 
             <Display24HrsData
@@ -317,9 +329,152 @@ export default function MainAppDisplay({ openLocationSearch }) {
               showGraph={showGraph}
               headingThreeStyling={headingThreeStylingAfterDay}
               leftMargin={leftMargin}
+              celOrFar={celOrFar}
+              mphOrKph={mphOrKph}
             />
           </div>
         </div>
+        {/*<div className="relative">*/}
+        {/*  <div className={`relative`}>*/}
+        {/*    <div*/}
+        {/*      ref={timeDateRef}*/}
+        {/*      className="absolute top-0 z-[100] ml-[2px] flex h-[8rem] gap-2"*/}
+        {/*    >*/}
+        {/*      <DisplayTimeDateMoonData*/}
+        {/*        hourlyWeatherData={hourlyWeatherData}*/}
+        {/*        dailyWeatherData={dailyWeatherData}*/}
+        {/*        dayStart={0}*/}
+        {/*        dayEnd={24}*/}
+        {/*        day={0}*/}
+        {/*        dailyMoonData={dailyMoonData}*/}
+        {/*        // timeMarginLeft={"ml-[2px] -px-[2px]"}*/}
+        {/*      />*/}
+        {/*      <DisplayTimeDateMoonData*/}
+        {/*        hourlyWeatherData={hourlyWeatherData}*/}
+        {/*        dailyWeatherData={dailyWeatherData}*/}
+        {/*        dayStart={24}*/}
+        {/*        dayEnd={48}*/}
+        {/*        day={1}*/}
+        {/*        dailyMoonData={dailyMoonData}*/}
+        {/*        timeMarginLeft={leftMargin}*/}
+        {/*      />*/}
+        {/*      <DisplayTimeDateMoonData*/}
+        {/*        hourlyWeatherData={hourlyWeatherData}*/}
+        {/*        dailyWeatherData={dailyWeatherData}*/}
+        {/*        dayStart={48}*/}
+        {/*        dayEnd={72}*/}
+        {/*        day={2}*/}
+        {/*        dailyMoonData={dailyMoonData}*/}
+        {/*        timeMarginLeft={leftMargin}*/}
+        {/*      />*/}
+        {/*      <DisplayTimeDateMoonData*/}
+        {/*        hourlyWeatherData={hourlyWeatherData}*/}
+        {/*        dailyWeatherData={dailyWeatherData}*/}
+        {/*        dayStart={72}*/}
+        {/*        dayEnd={96}*/}
+        {/*        day={3}*/}
+        {/*        dailyMoonData={dailyMoonData}*/}
+        {/*        timeMarginLeft={leftMargin}*/}
+        {/*      />*/}
+        {/*      <DisplayTimeDateMoonData*/}
+        {/*        hourlyWeatherData={hourlyWeatherData}*/}
+        {/*        dailyWeatherData={dailyWeatherData}*/}
+        {/*        dayStart={96}*/}
+        {/*        dayEnd={120}*/}
+        {/*        day={4}*/}
+        {/*        dailyMoonData={dailyMoonData}*/}
+        {/*        timeMarginLeft={leftMargin}*/}
+        {/*        timeMarginRight={"pr-2.5"}*/}
+        {/*      />*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
+        {/*  <div*/}
+        {/*    ref={weatherSectionRef}*/}
+        {/*    // style={{ marginTop: `${timeDateHeight}px` }}*/}
+        {/*    className="sticky top-0 z-[50] mt-[8rem] flex overflow-x-hidden overflow-y-scroll rounded"*/}
+        {/*  >*/}
+        {/*    <Display24HrsData*/}
+        {/*      hourlyWeatherData={hourlyWeatherData}*/}
+        {/*      dayStart={0}*/}
+        {/*      dayEnd={24}*/}
+        {/*      clouds={{*/}
+        {/*        high: showHighClouds,*/}
+        {/*        mid: showMidClouds,*/}
+        {/*        low: showLowClouds,*/}
+        {/*      }}*/}
+        {/*      showGraph={showGraph}*/}
+        {/*      scrollPosition={scrollPosition}*/}
+        {/*      headingThreeStyling={headingThreeStylingFirstDay}*/}
+        {/*      openLocationSearch={openLocationSearch}*/}
+        {/*      celOrFar={celOrFar}*/}
+        {/*      mphOrKph={mphOrKph}*/}
+        {/*    />*/}
+
+        {/*    <Display24HrsData*/}
+        {/*      hourlyWeatherData={hourlyWeatherData}*/}
+        {/*      dayStart={24}*/}
+        {/*      dayEnd={48}*/}
+        {/*      clouds={{*/}
+        {/*        high: showHighClouds,*/}
+        {/*        mid: showMidClouds,*/}
+        {/*        low: showLowClouds,*/}
+        {/*      }}*/}
+        {/*      showGraph={showGraph}*/}
+        {/*      headingThreeStyling={headingThreeStylingAfterDay}*/}
+        {/*      leftMargin={leftMargin}*/}
+        {/*      celOrFar={celOrFar}*/}
+        {/*      mphOrKph={mphOrKph}*/}
+        {/*    />*/}
+
+        {/*    <Display24HrsData*/}
+        {/*      hourlyWeatherData={hourlyWeatherData}*/}
+        {/*      dayStart={48}*/}
+        {/*      dayEnd={72}*/}
+        {/*      clouds={{*/}
+        {/*        high: showHighClouds,*/}
+        {/*        mid: showMidClouds,*/}
+        {/*        low: showLowClouds,*/}
+        {/*      }}*/}
+        {/*      showGraph={showGraph}*/}
+        {/*      headingThreeStyling={headingThreeStylingAfterDay}*/}
+        {/*      leftMargin={leftMargin}*/}
+        {/*      celOrFar={celOrFar}*/}
+        {/*      mphOrKph={mphOrKph}*/}
+        {/*    />*/}
+
+        {/*    <Display24HrsData*/}
+        {/*      hourlyWeatherData={hourlyWeatherData}*/}
+        {/*      dayStart={72}*/}
+        {/*      dayEnd={96}*/}
+        {/*      clouds={{*/}
+        {/*        high: showHighClouds,*/}
+        {/*        mid: showMidClouds,*/}
+        {/*        low: showLowClouds,*/}
+        {/*      }}*/}
+        {/*      showGraph={showGraph}*/}
+        {/*      headingThreeStyling={headingThreeStylingAfterDay}*/}
+        {/*      leftMargin={leftMargin}*/}
+        {/*      celOrFar={celOrFar}*/}
+        {/*      mphOrKph={mphOrKph}*/}
+        {/*    />*/}
+
+        {/*    <Display24HrsData*/}
+        {/*      hourlyWeatherData={hourlyWeatherData}*/}
+        {/*      dayStart={96}*/}
+        {/*      dayEnd={120}*/}
+        {/*      clouds={{*/}
+        {/*        high: showHighClouds,*/}
+        {/*        mid: showMidClouds,*/}
+        {/*        low: showLowClouds,*/}
+        {/*      }}*/}
+        {/*      showGraph={showGraph}*/}
+        {/*      headingThreeStyling={headingThreeStylingAfterDay}*/}
+        {/*      leftMargin={leftMargin}*/}
+        {/*      celOrFar={celOrFar}*/}
+        {/*      mphOrKph={mphOrKph}*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*</div>*/}
       </section>
     </section>
   );

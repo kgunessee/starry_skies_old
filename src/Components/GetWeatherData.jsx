@@ -139,10 +139,6 @@ export default function GetWeatherData({
     </svg>
   );
 
-  function handleToggleCoords() {
-    setToggleCoords(!toggleCoords);
-  }
-
   return (
     <>
       <form className={``} onSubmit={(e) => handleCallAPI(e)}>

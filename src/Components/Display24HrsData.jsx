@@ -11,7 +11,7 @@ import {
   weatherConditionBackground,
   dewPointBackground,
   humidityBackground,
-} from "../gridColourFunctions.js";
+} from "../gridColourFunctions.jsx";
 import {
   Clear,
   Cloudy,
@@ -82,22 +82,12 @@ const getWeatherIcon = (weatherCode) => {
   return weatherIcons[weatherCode] || null;
 };
 
-// Function to generate the rows of data for the different weather parameters (temperature, wind speed, etc.).
-const generateListItems = (
-  dataArray,
-  styleFunction,
-  unitSymbol = "",
-  roundToDecimal = 0,
-) => {
-  return dataArray.map((item, index) => (
-    <li
-      key={`${item}-${index}`}
-      style={styleFunction(item)}
-      className={`${gridItemStyling} md:w-[4.16%]`}
-    >
-      {item.toFixed(roundToDecimal) + unitSymbol}
-    </li>
-  ));
+const CelsiusToFahrenheit = (celsiusArr) => {
+  return celsiusArr.map((celsius) => (celsius * 9) / 5 + 32);
+};
+
+const mphToKph = (mphArr) => {
+  return mphArr.map((mph) => mph * 1.60934);
 };
 
 // Main component.
@@ -110,12 +100,32 @@ export default function Display24HrsData({
   scrollPosition,
   headingThreeStyling,
   leftMargin,
+  celOrFar,
+  mphOrKph,
 }) {
   const [daySection, setDaySection] = useState(null);
 
   const h3ScrollStyling = {
     transform: `translateX(${scrollPosition}px)`,
     transition: "all 0.5s",
+  };
+
+  // Function to generate the rows of data for the different weather parameters (temperature, wind speed, etc.).
+  const generateListItems = (
+    dataArray,
+    styleFunction,
+    unitSymbol = "",
+    roundToDecimal = 0,
+  ) => {
+    return dataArray.map((item, index) => (
+      <li
+        key={`${item}-${index}`}
+        style={styleFunction(item, celOrFar, mphOrKph)}
+        className={`${gridItemStyling} md:w-[4.16%]`}
+      >
+        {item.toFixed(roundToDecimal) + unitSymbol}
+      </li>
+    ));
   };
 
   // useEffect hook to update all weather data when the hourlyWeatherData prop changes with new weather data.
@@ -260,11 +270,17 @@ export default function Display24HrsData({
             className={`${gridRowStyling} `}
           >
             <h3 style={h3ScrollStyling} className={headingThreeStyling}>
-              Temperature (Celsius)
+              Temperature ({celOrFar ? "°F" : "°C"})
             </h3>
             <ul className={ulGlobalStyling}>
+              {/* Comparison checks to see if KPH is toggled on. If so, run the array through a function to convert to KPH */}
               {generateListItems(
-                hourlyWeatherData.temperature_2m.slice(dayStart, dayEnd),
+                celOrFar
+                  ? CelsiusToFahrenheit(
+                      hourlyWeatherData.temperature_2m.slice(dayStart, dayEnd),
+                    )
+                  : hourlyWeatherData.temperature_2m.slice(dayStart, dayEnd),
+
                 temperatureBackground,
                 "°",
               )}
@@ -276,14 +292,18 @@ export default function Display24HrsData({
             className={`${gridRowStyling} `}
           >
             <h3 style={h3ScrollStyling} className={headingThreeStyling}>
-              Wind Speed (mph)
+              Wind Speed ({mphOrKph ? "KPH" : "MPH"})
             </h3>
             <ul className={ulGlobalStyling}>
+              {/* Comparison checks to see if KPH is toggled on. If so, run the array through a function to convert to KPH.*/}
               {generateListItems(
-                hourlyWeatherData.wind_speed_10m.slice(dayStart, dayEnd),
+                mphOrKph
+                  ? mphToKph(
+                      hourlyWeatherData.wind_speed_10m.slice(dayStart, dayEnd),
+                    )
+                  : hourlyWeatherData.wind_speed_10m.slice(dayStart, dayEnd),
                 windSpeedBackground,
                 "",
-                1,
               )}
             </ul>
             <ul className={`${ulGlobalStyling}`}>
@@ -314,14 +334,17 @@ export default function Display24HrsData({
             className={`${gridRowStyling} `}
           >
             <h3 style={h3ScrollStyling} className={headingThreeStyling}>
-              Wind Gusts (mph)
+              Wind Gusts ({mphOrKph ? "KPH" : "MPH"})
             </h3>
             <ul className={ulGlobalStyling}>
               {generateListItems(
-                hourlyWeatherData.wind_gusts_10m.slice(dayStart, dayEnd),
+                mphOrKph
+                  ? mphToKph(
+                      hourlyWeatherData.wind_gusts_10m.slice(dayStart, dayEnd),
+                    )
+                  : hourlyWeatherData.wind_gusts_10m.slice(dayStart, dayEnd),
                 windGustBackground,
                 "",
-                1,
               )}
             </ul>
           </div>
@@ -331,25 +354,34 @@ export default function Display24HrsData({
             className={`${gridRowStyling} `}
           >
             <h3 style={h3ScrollStyling} className={headingThreeStyling}>
-              Dew Point (Celsius)
+              Dew Point ({celOrFar ? "°F" : "°C"})
             </h3>
             <ul className={`${ulGlobalStyling}`}>
+              {/* Not using the generate item function here due to comparison between humidity. */}
               {hourlyWeatherData.dew_point_2m
                 .slice(dayStart, dayEnd)
-                .map((item, index) => (
-                  <li
-                    className={`${gridItemStyling} `}
-                    style={dewPointBackground(
-                      item,
-                      hourlyWeatherData.dew_point_2m.slice(dayStart, dayEnd)[
-                        index
-                      ],
-                    )}
-                    key={`${item}-${index}`}
-                  >
-                    {item.toFixed(0)}°
-                  </li>
-                ))}
+                .map((item, index) => {
+                  {
+                    /* Not using the converter function as it expects an array and below returns a number. */
+                  }
+                  const itemInSelectedUnit = celOrFar
+                    ? (item * 9) / 5 + 32
+                    : item;
+                  return (
+                    <li
+                      className={`${gridItemStyling} `}
+                      style={dewPointBackground(
+                        item,
+                        hourlyWeatherData.dew_point_2m.slice(dayStart, dayEnd)[
+                          index
+                        ],
+                      )}
+                      key={`${item}-${index}`}
+                    >
+                      {itemInSelectedUnit.toFixed(0)}°
+                    </li>
+                  );
+                })}
             </ul>
           </div>
 
@@ -364,8 +396,7 @@ export default function Display24HrsData({
               {generateListItems(
                 hourlyWeatherData.relative_humidity_2m.slice(dayStart, dayEnd),
                 humidityBackground,
-                "°",
-                0,
+                "",
               )}
             </ul>
           </div>
@@ -375,20 +406,32 @@ export default function Display24HrsData({
             className={`${gridRowStyling} `}
           >
             <h3 style={h3ScrollStyling} className={headingThreeStyling}>
-              Visibility (Miles)
+              Visibility ({mphOrKph ? "Kilometers" : "Miles"})
             </h3>
             <ul className={ulGlobalStyling}>
+              {/* Not using the generate item function here due to custom rounding. */}
               {hourlyWeatherData.visibility
                 .slice(dayStart, dayEnd)
-                .map((item, index) => (
-                  <li
-                    className={gridItemStyling}
-                    style={visibilityBackground(Math.round(item / 1000))}
-                    key={`${item}-${index}`}
-                  >
-                    {Math.round(item / 1000)}
-                  </li>
-                ))}
+                .map((item, index) => {
+                  {
+                    /* Not using the converter function as it expects an array and below returns a number. */
+                  }
+
+                  const itemInSelectedUnit = mphOrKph ? item * 1.60934 : item;
+
+                  return (
+                    <li
+                      className={gridItemStyling}
+                      style={visibilityBackground(
+                        Math.round(item / 1000),
+                        mphOrKph,
+                      )}
+                      key={`${item}-${index}`}
+                    >
+                      {Math.round(itemInSelectedUnit / 1000)}
+                    </li>
+                  );
+                })}
             </ul>
           </div>
         </div>,
@@ -404,7 +447,7 @@ export default function Display24HrsData({
 }
 
 Display24HrsData.propTypes = {
-  hourlyWeatherData: PropTypes.array,
+  hourlyWeatherData: PropTypes.any,
   dayStart: PropTypes.number,
   dayEnd: PropTypes.number,
   clouds: PropTypes.object,
@@ -412,4 +455,6 @@ Display24HrsData.propTypes = {
   scrollPosition: PropTypes.number,
   headingThreeStyling: PropTypes.string,
   leftMargin: PropTypes.string,
+  celOrFar: PropTypes.bool,
+  mphOrKph: PropTypes.bool,
 };

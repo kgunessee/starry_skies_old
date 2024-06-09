@@ -65,13 +65,27 @@ export default function DisplayTimeDateMoonData({
     const sunrise = formatSunriseSunset(dailyWeatherData.sunrise[day]);
     const sunset = formatSunriseSunset(dailyWeatherData.sunset[day]);
 
-    if (formatTime(time).hour >= sunrise && formatTime(time).hour <= sunset) {
-      return { backgroundColor: "#CFDB3D", color: "#00011A" };
+    console.log(
+      formatSunriseSunset(dailyWeatherData.sunrise[day]),
+      formatSunriseSunset(dailyWeatherData.sunset[day]),
+    );
+
+    const currentHour = formatTime(time).hour;
+
+    if (sunset < sunrise) {
+      // Sunset is after midnight
+      if (currentHour >= sunrise || currentHour <= sunset) {
+        return { backgroundColor: "#CFDB3D", color: "#00011A" };
+      } else {
+        return { backgroundColor: "#001B29", color: "#F8F8F8" };
+      }
     } else {
-      return {
-        backgroundColor: "#001B29",
-        color: "#F8F8F8",
-      };
+      // Sunset is before midnight
+      if (currentHour >= sunrise && currentHour <= sunset) {
+        return { backgroundColor: "#CFDB3D", color: "#00011A" };
+      } else {
+        return { backgroundColor: "#001B29", color: "#F8F8F8" };
+      }
     }
   };
 
@@ -155,11 +169,11 @@ export default function DisplayTimeDateMoonData({
   };
 
   // Function to style moon icon visibility based on moonrise and moonset times.
-  const moonVisibilityStyling = (item) => {
-    if (item === 1) {
-      return { backgroundColor: "#00011A", color: "#00011A" };
-    }
-  };
+  // const moonVisibilityStyling = (item) => {
+  //   if (item === 1) {
+  //     return { backgroundColor: "#00011A", color: "#00011A" };
+  //   }
+  // };
 
   // useEffect hook to handle time data
   useEffect(() => {
@@ -291,7 +305,7 @@ export default function DisplayTimeDateMoonData({
       moonVisibility.map((item, index) => {
         return (
           <li
-            style={moonVisibilityStyling(item)}
+            // style={moonVisibilityStyling(item)}
             className={`${gridItemStyling}`}
             key={`${item}-${index}`}
           >
@@ -339,8 +353,8 @@ export default function DisplayTimeDateMoonData({
 }
 
 DisplayTimeDateMoonData.propTypes = {
-  hourlyWeatherData: PropTypes.array,
-  dailyWeatherData: PropTypes.object,
+  hourlyWeatherData: PropTypes.any,
+  dailyWeatherData: PropTypes.any,
   dailyMoonData: PropTypes.array,
   dayStart: PropTypes.number,
   dayEnd: PropTypes.number,

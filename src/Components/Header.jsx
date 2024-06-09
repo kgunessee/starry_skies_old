@@ -1,8 +1,15 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function Header({ openSearch, openMenu }) {
   const [searchArrow, setSearchArrow] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
   const handleChangeArrow = () => {
     setSearchArrow(!searchArrow);
@@ -10,7 +17,7 @@ export default function Header({ openSearch, openMenu }) {
 
   const menuButtonClosedStyle = "bg-transparent";
 
-  const menuButtonOpenStyle = "bg-1E6B96";
+  const menuButtonOpenStyle = "bg-blue-500";
   return (
     <>
       <header
@@ -21,43 +28,49 @@ export default function Header({ openSearch, openMenu }) {
             Starry Skies
           </h1>
         </div>
-        <button
-          className={`${
-            isSearchOpen ? menuButtonOpenStyle : menuButtonClosedStyle
-          } rounded border-2 border-1E6B96 px-2 py-1 font-inter text-sm font-semibold text-LIGHT-COLOR`}
-          onClick={() => {
-            setIsSearchOpen(!isSearchOpen);
-            openSearch();
-            handleChangeArrow();
-          }}
-        >
-          Enter Location{" "}
-          <svg
-            style={{
-              transform: searchArrow ? "rotate(180deg)" : "rotate(0deg)",
-              transition: "transform 0.3s",
-              display: "inline-block",
+        <div className={`flex h-10 gap-4`}>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            className={`${
+              isSearchOpen ? menuButtonOpenStyle : menuButtonClosedStyle
+            } rounded border-2 border-blue-500 px-2 py-1 font-inter text-sm font-semibold text-LIGHT-COLOR`}
+            onClick={() => {
+              setIsSearchOpen(!isSearchOpen);
+              openSearch();
+              handleChangeArrow();
             }}
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="#e8eaed"
-            viewBox="0 -960 960 960"
           >
-            <path d="M480-344L240-584l56-56 184 184 184-184 56 56-240 240z"></path>
-          </svg>
-        </button>
-        <button className={`relative z-[200]`} onClick={openMenu}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e8eaed"
+            Enter Location
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              openMenu();
+              toggleMenu();
+            }}
+            className="relative z-[9999] flex h-10 w-10 flex-col items-center justify-center p-2"
           >
-            <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
-          </svg>
-        </button>
+            <span
+              className={`block h-0.5 w-full bg-LIGHT-COLOR transition-transform ${
+                isOpen
+                  ? "origin-center translate-y-0.5 rotate-45"
+                  : "-translate-y-2"
+              }`}
+            />
+            <span
+              className={`block h-0.5 w-full bg-LIGHT-COLOR transition-opacity ${
+                isOpen ? "opacity-0" : "opacity-100"
+              }`}
+            />
+            <span
+              className={`block h-0.5 w-full bg-LIGHT-COLOR transition-transform ${
+                isOpen
+                  ? "origin-center -translate-y-0.5 -rotate-45"
+                  : "translate-y-2"
+              }`}
+            />
+          </motion.button>
+        </div>
       </header>
     </>
   );

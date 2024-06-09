@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PlacesAutocomplete from "react-places-autocomplete";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 
@@ -50,7 +50,7 @@ export default function SearchAPI_InputBox({ coordinatesFromAPI }) {
                     style,
                   })}
                 >
-                  <span className=" hover:text-F8F8F8 block w-full rounded bg-000E14 p-1 hover:bg-blue-950">
+                  <span className="hover:text-F8F8F8 block w-full rounded bg-000E14 p-1 hover:bg-blue-950">
                     {suggestion.description}
                   </span>
                 </div>
